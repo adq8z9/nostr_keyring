@@ -8,9 +8,9 @@ This nip should propose an event for subkey/masterkey-relationships.
   "pubkey": <32-bytes lowercase hex-encoded public key of the publisher>,
   "kind": 17991, // as defined in NIP-01 a replacable kind-number is used for this event-type
   "tags": [
-    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (signing, certify, encryption, authentication) of the subkey>],
+    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. signing, certify, encryption, authentication) of the subkey>],
     ...
-    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function of the subkey>],
+    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. signing, certify, encryption, authentication) of the subkey>],
     ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the subkey>],
     ...
     ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the subkey>]
