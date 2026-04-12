@@ -1,6 +1,6 @@
 # Nostr keyring nip 
 
-This nip should propose an event for subkey/masterkey-relationships.
+This nip should propose an event for otherkey/subkey/masterkey-relationships.
 
 ~~~
 {
@@ -11,9 +11,12 @@ This nip should propose an event for subkey/masterkey-relationships.
     ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. signing, certify, encryption, authentication) of the subkey>],
     ...
     ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. signing, certify, encryption, authentication) of the subkey>],
-    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the subkey>],
+    ["O", <32-bytes lowercase hex-encoded public key of an other key>, <optional description / function (e.g. signing, certify, encryption, authentication) of the other key>],
     ...
-    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the subkey>]
+     ["O", <32-bytes lowercase hex-encoded public key of an other key>, <optional description / function (e.g. signing, certify, encryption, authentication) of the other key>],
+    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the masterkey>],
+    ...
+    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the masterkey>]
   ]
   "content": "",
   "sig": <64-bytes lowercase hex of the signature of the sha256 hash of the serialized event data, which is the same as the "id" field>
