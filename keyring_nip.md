@@ -20,7 +20,7 @@ This nip should propose an event for otherkey/subkey/masterkey-relationships.
   ]
   "content": nip44_encrypted("
     [
-      { relation: "S or M or O from above", pubkey: <32-bytes lowercase hex-encoded public key of key>, name: "<name of key/account", description: "<optional desccription>", seckey: <hex of secret key>, function: "signing, certify, encryption or authentication" },
+      { relation: "S or M or O from above", pubkey: <32-bytes lowercase hex-encoded public key of key>, name: "<name of key/account", description: "<optional desccription>", seckey: <hex of secret key>, function: ["signing, certify, encryption and/or authentication"] },
       ...,
       { ... }
     ]
