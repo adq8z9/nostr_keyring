@@ -10,19 +10,19 @@ The keyring event, should have the following format:
   "pubkey": <32-bytes lowercase hex-encoded public key of the publisher>,
   "kind": 17991, // as defined in NIP-01 a replacable kind-number is used for this event-type
   "tags": [
-    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. signing, certify, encryption, authentication) of the subkey>],
+    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. "signing", "certify", "encryption", and/or "authentication") of the subkey>],
     ...
-    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. signing, certify, encryption, authentication) of the subkey>],
-    ["O", <32-bytes lowercase hex-encoded public key of an other key>, <optional description / function (e.g. signing, certify, encryption, authentication) of the other key>],
+    ["S", <32-bytes lowercase hex-encoded public key of a subkey>, <optional description / function (e.g. "signing", "certify", "encryption", and/or "authentication") of the subkey>],
+    ["O", <32-bytes lowercase hex-encoded public key of an other key>, <optional description / function (e.g. "signing", "certify", "encryption", and/or "authentication") of the otherkey>],
     ...
-     ["O", <32-bytes lowercase hex-encoded public key of an other key>, <optional description / function (e.g. signing, certify, encryption, authentication) of the other key>],
-    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the masterkey>],
+     ["O", <32-bytes lowercase hex-encoded public key of an other key>, <optional description / function (e.g. "signing", "certify", "encryption", and/or "authentication") of the otherkey>],
+    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function (e.g. "signing", "certify", "encryption", and/or "authentication") of the masterkey>],
     ...
-    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function of the masterkey>]
+    ["M", <32-bytes lowercase hex-encoded public key of a masterkey>, <optional description / function (e.g. "signing", "certify", "encryption", and/or "authentication") of the masterkey>]
   ]
   "content": nip44_encrypted("
     [
-      { relation: "S or M or O from above", pubkey: <32-bytes lowercase hex-encoded public key of key>, name: "<name of key/account", description: "<optional desccription>", seckey: <hex of secret key>, function: ["signing, certify, encryption and/or authentication"] },
+      { relation: "<S or M or O from the related keys from the tags>", name: "<name of key/account>", description: "<optional desccription>", pubkey: <32-bytes lowercase hex-encoded public key of key>, seckey: <hex of secret key>, function: ["signing", "certify", "encryption", and/or "authentication""] },
       ...,
       { ... }
     ]
@@ -32,3 +32,31 @@ The keyring event, should have the following format:
 ~~~
 
 The related key should be included in the keyring event of the other related key respectively (e.g. masterkey includes subkey in its keyring event, subkey includes masterkey in its keyring event).
+Saving the secretkey of the related key in the content-field is optional. E.g. it probably doesn't make sense to save the nsec of the masterkey in the subkey keyring event, or one doesn't want to save it for any related key, etc..
+
+## Nostr subkey login
+
+Related to the keyring event here a protocol for conducting a login with a subkey from the keyring should be proposed. In the following are some possible subkey log in workflows.
+
+### Option 1:
+
+A masterkey keyring signer app creates a random secret key as subkey. It includes it in its keyring event as subkey. For the subkey it creates a keyring event with the masterkey included. 
+
+It creates a bech32 string in the format 'nlogin...'. The bech32-string should follow in general the instructions of NIP19. The prefix should be 'nlogin'. TLV 0 is the 32 bytes of the subkey secret key. TLV 1 is the specified home-relays of the masterkey. TLV 2 is the pubkey of the masterkey. And TLV 3 is the keyring kind number 17991.
+
+The bech32-string 'nlogin...' is then shared with the login-program, one wants to login with (login-program), e.g. via 'copy-and-paste' or a QR-Code, etc.. The login-program takes the string, decodes it and uses the login subkey and login relays to fetch the subkey-keyring event and the masterkey-keyring event to verify the validity.
+The login-program can now use the subkey secret key and the user is logged in.
+
+### Option 2:
+
+User pastes into the login-program, it wants to log into, its NIP05 DNS-based identifier. The login-program fetches the user-npub and the user-relays. The login-prgram creates a random subkey secret key and creates a 'nlogin...' bech32-string as defined in Option 1, where TLV 0 is the subkey secret key or subkey public key (if you don't want to share and save subkey secret key). TLV 1 is the relays from NIP05 DNS-based identifier. TLV 2 is the npub from the NIP05 DNS-based identifier. TLV3 is the keyring kind number 17991. 
+
+Now the login-program shares the 'nlogin..' bech32-string with the masterkey signer app, e.g. via 'copy-and-paste' or a QR-Code, etc.. The masterkey signer app decodes the 'nlogin...' bech32-string. The masterkey signer app includes the subkey in its keyring event and creates a respective subkey keyring event (or the subkey keyring event is created by login-program, if just subkey-npub is shared). The login-program tries to fetch the keyring events from the NIP05-identifier relays to check the validity of login.
+
+(The login-program could also just share the npub in the 'nlogin...' string of the subkey and create the subkey keyring event itself and share over the communicated relays.)
+(Instead of with the NIP05 DNS-Identifier this could also be done with the masterkey 'nprofile...' string.)
+
+
+### Other option:
+
+In general the informations subkey, masterkey and relays have to be transferred between the login-program and the masterkey signer app. All possible ways of transfer of these information are valid options.
