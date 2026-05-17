@@ -2,6 +2,8 @@
 
 This nip should propose an event for otherkey/subkey/masterkey-relationships.
 
+The keyring event, should have the following format:
+
 ~~~
 {
   "id": <32-bytes lowercase hex-encoded sha256 of the serialized note data>,
@@ -28,3 +30,5 @@ This nip should propose an event for otherkey/subkey/masterkey-relationships.
   "sig": <64-bytes lowercase hex of the signature of the sha256 hash of the serialized event data, which is the same as the "id" field>
 }
 ~~~
+
+The related key should be included in the keyring event of the other related key respectively (e.g. masterkey includes subkey in its keyring event, subkey includes masterkey in its keyring event).
